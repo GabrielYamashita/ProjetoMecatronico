@@ -4,7 +4,12 @@
 
 class MP {
    public:
-   MP(PinName A, PinName B, PinName C, PinName D, PinName Dir);
-}
+      MP(PinName a, PinName b, PinName c, PinName d); // 
+        
+      void MoverMotor(int Dir);
+
+      BusOut MotorPasso;
+      int espera;
+};
 
 #endif
