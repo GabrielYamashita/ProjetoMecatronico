@@ -4,8 +4,7 @@
 
 class MP {
    public:
-   MP();
+   MP(PinName A, PinName B, PinName C, PinName D, PinName Dir);
 }
-
 
 #endif
