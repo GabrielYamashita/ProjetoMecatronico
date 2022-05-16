@@ -9,6 +9,6 @@ DigitalIn MoveMotor(D15);
 DigitalIn FCxi(D14);
 DigitalIn D(PC_13); // Recebe o Input do Sentido de Rotação do Motor
 
-int main(){
+int main(){ // Loop Principal
     MPx.MotorPorPasso(200, 1);
 }

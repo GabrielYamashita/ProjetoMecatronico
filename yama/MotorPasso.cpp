@@ -1,6 +1,16 @@
 #include "MotorPasso.h" // Importa Arquivo de Classe do Motor de Passo
 
-MP::MP(PinName a, PinName b, PinName c, PinName d, PinName fci, PinName fcf) : MotorPasso(a, b, c, d), FCi(fci), FCf(fcf) { // __init__ , cria o BusOut, FCi e FCf a partir dos PinNames
+MP::MP( // __init__
+    PinName a, // Pino A
+    PinName b, // Pino B
+    PinName c, // Pino C
+    PinName d, // Pino D
+    PinName fci, // Pino do Fim de Curso Inicial
+    PinName fcf // Pino do Fim de Curso Final
+) : 
+        MotorPasso(a, b, c, d), // BusOut do Motor de Passo
+        FCi(fci), // Fim de Curso Inicial
+        FCf(fcf) { // Fim de Curso Final
     this -> revCompleta = 200; // Passos para dar uma Revolução Completa
     this -> espera = 2; // Tempo de Espera para Mover um Passo [ms]
 }
