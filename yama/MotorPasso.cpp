@@ -1,4 +1,5 @@
 #include "MotorPasso.h" // Importa Arquivo de Classe do Motor de Passo
+Serial pc(USBTX, USBRX);
 
 MP::MP( // __init__
     PinName a, // Pino A
@@ -15,46 +16,50 @@ MP::MP( // __init__
     this -> espera = 2; // Tempo de Espera para Mover um Passo [ms]
 }
 
-void MP::MoverMotor(int Dir) { // Método para Mover Motor Infinitamente com Input de Direção
-    if(FCi == 1 & FCf == 1) { // Checa se os Fim de Cursos estão Pressionados
-        if(Dir == 0) { // Gira no Sentido Horário
-            for(int i = 3; i > -1; i--) { // Loop para Alternar as Bobinas
-                MotorPasso = 1 << i; // Muda o Bitwise
-                wait_ms(espera); // Espera o Tempo Pré-Definido
-            }
-        } else if(Dir == 1) { // Gira no Sentido Horário
-            for(int i = 0; i < 4; i++) { // Loop para Alternar as Bobinas
-                MotorPasso = 1 << i; // Muda o Bitwise
-                wait_ms(espera); // Espera o Tempo Pré-Definido
-            }
-        }
+ // Método para Mover Motor Infinitamente com Input de Direção
+void MP::MoverMotor(int Dir) {
+    if(Dir == 0) { // Gira no Sentido Horário
+        this->Passo--;
+        
+        if(Passo == -1){this->Passo = 3;}
+        
+        MotorPasso = 1 << Passo;
+        wait_ms(espera);
+        
+    } else if(Dir == 1) { // Gira no Sentido Anti-Horário
+        this -> Passo++;
+        
+        if(Passo == 4){this -> Passo = 0;}
+        
+        MotorPasso = 1 << Passo; // Muda o Bitwise
+        wait_ms(espera); // Espera o Tempo Pré-Definido
     }
 }
 
-void MP::MotorReferenciamento(void) { // Método para Mover Motor para o Referenciamento
-    if(FCi == 1 & FCf == 1) { // Checa se os Fim de Cursos estão Pressionados
-        for(int i = 3; i > -1; i--) { // Loop para Alternar as Bobinas
-            MotorPasso = 1 << i; // Muda o Bitwise
-            wait_ms(espera); // Espera o Tempo Pré-Definido
-        }
+ // Método para Mover Motor para o Referenciamento
+void MP::MotorReferenciamento(void) {
+    while(FCi == 1 & FCf == 1) {
+        MoverMotor(0);
+    }
+    
+    while(FCi == 0 | FCf == 0) {
+        MoverMotor(1);
+    }
+    
+    while(FCi == 1 & FCf == 1) {
+        MoverMotor(0);
     }
 }
 
-void MP::MotorPorPasso(int passos, int Dir) { // Método para Mover Motor com quantidade de Passos e Direção Pré-Definida 
-    if(FCi == 1 & FCf == 1) {
-        for(int passosMotor = 0; passosMotor < passos/4; passosMotor++) { // Loop para Contar os Passos Realizados
-            if(Dir == 0) { // Gira no Sentido Horário
-                for(int i = 3; i > -1; i--) { // Loop para Alternar as Bobinas
-                    MotorPasso = 1 << i; // Muda o Bitwise
-                    wait_ms(espera); // Espera o Tempo Pré-Definido
-                }
-            } else if(Dir == 1) { // Gira no Sentido Horário
-                for(int i = 0; i < 4; i++) { // Loop para Alternar as Bobinas
-                    MotorPasso = 1 << i; // Muda o Bitwise
-                    wait_ms(espera); // Espera o Tempo Pré-Definido
-                }
-            }
-        }
+void velocidadeMotor() {   
+}
+
+ // Método para Mover Motor com Input de Passos e Direção 
+void MP::MotorPorPasso(int Dir, int passos) {
+    int p = 0;
+    while(p < passos) {
+        MoverMotor(Dir);
+        p++;
     }
 }
 

@@ -5,10 +5,8 @@ MP MPx(D2, D3, D4, D5, PA_5, PA_6); // Bobina1, Bobina2, Bobina3, Bobina4, FimDe
 //MP MPy(D6, D7, D8, D9, PC_7, PA_9); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | y
 //MP MPz(D10, D11, D12, D13, PB_4, PB_5); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | z
 
-DigitalIn MoveMotor(D15);
-DigitalIn FCxi(D14);
-DigitalIn D(PC_13); // Recebe o Input do Sentido de Rotação do Motor
+DigitalIn Button(PC_13); // Recebe o Input do Sentido de Rotação do Motor
 
 int main(){ // Loop Principal
-    MPx.MotorPorPasso(200, 1);
+    MPx.MotorPorPasso(1, 197);
 }

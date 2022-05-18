@@ -16,6 +16,7 @@ class MP { // Inicialização da Classe MP (Motor de Passo)
         
         int revCompleta; // Declaração da Variável Rev. Completa do Motor
         int espera; // Declaração da Variável Espera do Tempo entre Passos
+        int Passo;
 };
 
 #endif // Final do if
