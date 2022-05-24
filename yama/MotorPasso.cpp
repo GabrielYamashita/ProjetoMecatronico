@@ -12,8 +12,10 @@ MP::MP( // __init__
         MotorPasso(a, b, c, d), // BusOut do Motor de Passo
         FCi(fci), // Fim de Curso Inicial
         FCf(fcf) { // Fim de Curso Final
+        
+    // Variáveis da Classe
     this -> revCompleta = 200; // Passos para dar uma Revolução Completa
-    this -> espera = 2; // Tempo de Espera para Mover um Passo [ms]
+    this -> espera = 4; // Tempo de Espera para Mover um Passo [ms]
 }
 
  // Método para Mover Motor Infinitamente com Input de Direção
@@ -37,17 +39,17 @@ void MP::MoverMotor(int Dir) {
 }
 
  // Método para Mover Motor para o Referenciamento
-void MP::MotorReferenciamento(void) {
+void MP::MotorReferenciamento(bool D) {
     while(FCi == 1 & FCf == 1) {
-        MoverMotor(0);
+        MoverMotor(D);
     }
     
     while(FCi == 0 | FCf == 0) {
-        MoverMotor(1);
+        MoverMotor(!D);
     }
     
     while(FCi == 1 & FCf == 1) {
-        MoverMotor(0);
+        MoverMotor(D);
     }
 }
 
@@ -62,9 +64,3 @@ void MP::MotorPorPasso(int Dir, int passos) {
         p++;
     }
 }
-
-
-
-
-
-
