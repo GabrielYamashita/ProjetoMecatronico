@@ -4,18 +4,20 @@
 
 class Joystick { // Inicialização da Classe JoyStick
     public:
-        Joystick(PinName x, Piname y, PinName but); // x, y e botão do JoyStick
+        Joystick(PinName x, PinName y, PinName but); // x, y e botão do JoyStick
         
         //Métodos:
+        int Coordenada();
+        void Button();
         
         // GPIO's:
         AnalogIn xAxis;
         AnalogIn yAxis;
         DigitalIn Sw;
         
-        // Variáveis
-        int x;
-        int y;      
+        // Variáveis:
+        int lim;
+        int x, y;
 };
 
 #endif // Final do if

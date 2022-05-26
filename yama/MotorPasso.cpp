@@ -1,5 +1,5 @@
 #include "MotorPasso.h" // Importa Arquivo de Classe do Motor de Passo
-Serial pc(USBTX, USBRX);
+//Serial pc(USBTX, USBRX);
 
 MP::MP( // __init__
     PinName a, // Pino A
