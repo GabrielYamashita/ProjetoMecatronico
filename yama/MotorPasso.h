@@ -9,7 +9,8 @@ class MP { // Inicialização da Classe MP (Motor de Passo)
         // Métodos:
         void MoverMotor(int Dir); // Inicialização do Método para Mover Motor Infinitamente com Input de Direção
         void MotorReferenciamento(bool D); // Inicialização do Método para Mover Motor para o Referenciamento
-        void MotorPorPasso(int passos, int Dir); // Inicialização do Método para Mover Motor com quantidade de Passos e Direção Pré-Definida 
+        void MotorPorPasso(int passos, int Dir); // Inicialização do Método para Mover Motor com quantidade de Passos e Direção Pré-Definida
+        void MotorDosagem(int Coord); // Inicialização do Método para Mover o Motor com Coordenadas na Rotina da Dosagem
 
         // GPIO's:
         BusOut MotorPasso; // Inicialização do BusOut MotorPasso

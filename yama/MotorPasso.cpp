@@ -1,5 +1,4 @@
 #include "MotorPasso.h" // Importa Arquivo de Classe do Motor de Passo
-//Serial pc(USBTX, USBRX);
 
 MP::MP( // __init__
     PinName a, // Pino A
@@ -40,27 +39,39 @@ void MP::MoverMotor(int Dir) {
 
  // Método para Mover Motor para o Referenciamento
 void MP::MotorReferenciamento(bool D) {
-    while(FCi == 1 & FCf == 1) {
-        MoverMotor(D);
+    while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
+        MoverMotor(D); // Move o Motor para o Fim de Curso
     }
     
-    while(FCi == 0 | FCf == 0) {
-        MoverMotor(!D);
+    while(FCi == 0 | FCf == 0) { // Checa se Apenas um Fim de Curso está pressionado
+        MoverMotor(!D); // Move o Motor para o Outro Lado
     }
     
-    while(FCi == 1 & FCf == 1) {
-        MoverMotor(D);
+    while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
+        MoverMotor(D); // Move o Motor para o Fim de Curso
     }
 }
 
-void velocidadeMotor() {   
+ // Método da Aceleração do Motor
+void accMotor() {   
 }
 
  // Método para Mover Motor com Input de Passos e Direção 
-void MP::MotorPorPasso(int Dir, int passos) {
-    int p = 0;
-    while(p < passos) {
-        MoverMotor(Dir);
+void MP::MotorPorPasso(int passos, int Dir) {
+    int p = 0; // Inicia Contagem de Passos
+    while(p < passos) { // Move o Motor Enquando não Atingir a Quantidade de Passos
+        MoverMotor(Dir); // Move o Motor
         p++;
+    }
+}
+
+ // Método para Mover o Motor com Coordenadas
+void MP::MotorDosagem(int Coord) {
+    if(Coord > 0) { // Se a Coordenada der Negativa o Motor vai para -Eixo
+        MotorPorPasso(Coord, 1); // Move o Motor com Coord passos, para - Eixo
+    }
+    
+    else { // Se a Coordenada der Positiva o Motor vai para +Eixo
+        MotorPorPasso(Coord, 0); // Move o Motor com Coord passos, para +Eixo
     }
 }
