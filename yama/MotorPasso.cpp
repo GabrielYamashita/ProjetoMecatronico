@@ -68,7 +68,7 @@ void MP::MotorPorPasso(int passos, int Dir) {
  // Método para Mover o Motor com Coordenadas
 void MP::MotorDosagem(int Coord) {
     if(Coord > 0) { // Se a Coordenada der Negativa o Motor vai para -Eixo
-        MotorPorPasso(Coord, 1); // Move o Motor com Coord passos, para - Eixo
+        MotorPorPasso(abs(Coord), 1); // Move o Motor com Coord passos, para - Eixo
     }
     
     else { // Se a Coordenada der Positiva o Motor vai para +Eixo

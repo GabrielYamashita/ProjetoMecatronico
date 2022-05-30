@@ -45,7 +45,7 @@ int main(){
     while(estado == 0) { // MENU
         
         
-        // estado = 1; // Vai para a Rotina de Referênciamento
+        estado = 1; // Vai para a Rotina de Referênciamento
     } // FIM DO ESTADO DE MENU
     
     
@@ -55,7 +55,7 @@ int main(){
         MPy.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Y | y
 //        MPz.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Z | z
         
-        // estado = 2; // Vai para a Rotina de Posicionamento
+        estado = 2; // Vai para a Rotina de Posicionamento
     } // FIM DO ESTADO DE REFERENCIAMENTO
     
     
@@ -80,7 +80,7 @@ int main(){
 //                y++;
 //            }
 //        }
-        // estado = 3; // Vai para a Rotina de Dosagem
+        estado = 3; // Vai para a Rotina de Dosagem
     } // FIM DO ESTADO DE POSICIONAMENTO
     
     
@@ -125,7 +125,7 @@ int main(){
             }   
             recip++;
         }
-        // estado = 4; // Vai para o Finalização
+        estado = 4; // Vai para o Finalização
     } // FIM DO ESTADO DE DOSAGEM
     
     while(estado == 4) { // FINALIZAÇÃO
