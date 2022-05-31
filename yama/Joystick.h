@@ -4,20 +4,21 @@
 
 class Joystick { // Inicialização da Classe JoyStick
     public:
-        Joystick(PinName x, PinName y, PinName but); // x, y e botão do JoyStick
+        Joystick(PinName xPin, PinName yPin, PinName butPin); // x, y e botão do JoyStick
         
         //Métodos:
-        int Coordenada();
-        void Button();
+        int GetXValue(); // Inicialização do Método para Pegar o Valor do X
+        int GetYValue(); // Inicialização do Método para Pegar o Valor do Y
+        void Button(); // Inicialização do Método para Receber Input do Botão
         
         // GPIO's:
-        AnalogIn xAxis;
-        AnalogIn yAxis;
-        DigitalIn Sw;
+        AnalogIn xAxis; // Inicialização do AnalogIn do Eixo X
+        AnalogIn yAxis; // Inicialização do AnalogIn do Eixo Y
+        DigitalIn Sw; // Inicialização do DigitalIn do Botão
         
         // Variáveis:
-        int lim;
-        int x, y;
+        int offset; // Inicaliza a Variável de Compensação do JS
+        int xValue, yValue; // Inicialização dos Valores dos Eixos
 };
 
 #endif // Final do if

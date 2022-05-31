@@ -2,41 +2,65 @@
 Serial pc(USBTX, USBRX);
 
 Joystick::Joystick( // __init__
-    PinName x, // Pino do x
-    PinName y, // Pino do y
-    PinName but // Pino do Botão
+    PinName xPin, // Pino do x
+    PinName yPin, // Pino do y
+    PinName butPin // Pino do Botão
 ) : 
-        xAxis(x), // Medição do Joystick em x
-        yAxis(y), // Medição do Joystick em y
-        Sw(but) { // Botão do Joystick
+        xAxis(xPin), // Medição do Joystick em x
+        yAxis(yPin), // Medição do Joystick em y
+        Sw(butPin) { // Botão do Joystick
 
         // Variáveis de Classe:
-        this -> lim = 500;
+        this -> offset = 200; // Compensação para Erro do JS
 }
 
-int Joystick::Coordenada() {
-    int a;
-    x = xAxis.read() * 1000; // Coordenada do x em int
-    y = yAxis.read() * 1000; // Coordenada do y em int
+ // Método para Pegar o Valor do X
+int Joystick::GetXValue() { // 
+    int xSum = 0; // Soma dos Pontos de X
     
-    if (x < 500 - lim) { // -x
-        a = 0;
+    // Soma 5 Medições no Ponto X
+    for(int i = 0; i < 5; i++) {
+        xSum += xAxis.read() * 1000;
     }
     
-    if (x > 500 + lim) { // +x
-        a = 1;
-    }
+    int xValue = xSum/5; // Faz a Média das 5 Medições
     
-    if (y < 500 - lim) { // -y
-        a = 2;
+    // Checa Valores do X
+    if(xValue < 0) {
+        return 0; // x = 0
     }
-    
-    if (y > 500 + lim) { // +y
-        a = 3;
+    else if(xValue > 1000) {
+        return 1000; // x = 1000
     }
-    return a;
+    else {
+        return xValue; // x = xValue
+    }
 }
 
+ // Método para Pegar o Valor do Y
+int Joystick::GetYValue() {
+    int ySum = 0; // Soma dos Pontos de Y
+    
+    // Soma 5 Medições no Ponto Y
+    for(int i = 0; i < 5; i++) {
+        ySum += yAxis.read() * 1000;
+    }
+    
+    int yValue = ySum/5; // Faz a Média das 5 Medições
+    
+    // Checa Valores do Y
+    if(yValue < 0) {
+        return 0; // y = 0
+    }
+    else if(yValue > 1000) {
+        return 1000; // y = 1000
+    }
+    else {
+        return yValue; // y = xValue
+    }
+}
+
+ // Método para Receber Input do Botão
 void Joystick::Button() {
 }
 
