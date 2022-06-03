@@ -5,9 +5,9 @@
 #include "TelasLCD.h" // Importa as Funções das Telas do LCD
 
 // OBJETOS DE CLASSE PARA A MÁQUINA:
-MP MPx(PB_2, PB_1, PB_15, PB_14, PB_13, PC_4); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | x
-MP MPy(PA_5, PA_6, PA_7, PB_6, PA_12, PA_11); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | y
-MP MPz(PB_9, PB_8, PC_9, PC_8, PC_6, PC_5); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | z
+MP MPx(PB_2, PB_1, PB_15, PB_14, PA_11, PA_12); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | x
+MP MPy(PA_5, PA_6, PA_7, PB_6, PB_13, PC_4); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | y
+MP MPz(PB_9, PB_8, PC_9, PC_8, PC_5, PC_6); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | z
 
 Joystick JS(A4, A5, PC_13); // x, y, botão | joystick
 
@@ -54,10 +54,12 @@ int main(){
     
     
     while(estado == 1) { // REFERÊNCIAMENTO
-        MPx.MoverMotor(1);
-//        MPx.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo X | x
-//        MPy.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Y | y
-//        MPz.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Z | z
+//        MPx.MoverMotor(0);
+//        MPy.MoverMotor(1);
+//        MPz.MoverMotor(1);
+        MPx.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo X | x
+        MPy.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Y | y
+        MPz.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Z | z
         
 //        estado = 2; // Vai para a Rotina de Posicionamento | IHM
     } // FIM DO ESTADO DE REFERENCIAMENT
@@ -186,6 +188,10 @@ void JS_Posicionamento(int x, int y) { // Move os Motores de Acordo com Inputs d
 
 void pulsoPipeta(int z) { // Move e Emite Pulso da Pipeta | Dosagem
 //    MPz.MotorPorPasso(z, 1);
+//    Rele = 0;
+//    wait(0.1);
+//    Rele = 1;
+//    wait_ms(2000);
 //    MPz.MotorPorPasso(z, 0);
     
 }

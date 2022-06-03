@@ -61,7 +61,14 @@ int Joystick::GetYValue() {
 }
 
  // Método para Receber Input do Botão
-void Joystick::Button() {
+int Joystick::Button() {
+    if(Sw == 0) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+//    return estado;
 }
 
 
