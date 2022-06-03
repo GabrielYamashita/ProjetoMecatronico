@@ -18,7 +18,7 @@ class MP { // Inicialização da Classe MP (Motor de Passo)
         DigitalIn FCf; // Inicialização do DigitalIn Fim de Curso Final
         
         // Variáveis:
-        int revCompleta; // Declaração da Variável Rev. Completa do Motor
+        int QntPassos; // Declaração da Variável Rev. Completa do Motor
         int espera; // Declaração da Variável Espera do Tempo entre Passos
         int Passo; // Declaração
 };

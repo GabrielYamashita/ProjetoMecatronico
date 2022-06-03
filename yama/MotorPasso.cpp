@@ -13,7 +13,7 @@ MP::MP( // __init__
         FCf(fcf) { // Fim de Curso Final
         
     // Variáveis da Classe
-    this -> revCompleta = 200; // Passos para dar uma Revolução Completa
+    this -> QntPassos = 0; // 
     this -> espera = 4; // Tempo de Espera para Mover um Passo [ms]
 }
 
@@ -67,7 +67,7 @@ void MP::MotorPorPasso(int passos, int Dir) {
 
  // Método para Mover o Motor com Coordenadas
 void MP::MotorDosagem(int Coord) {
-    if(Coord > 0) { // Se a Coordenada der Negativa o Motor vai para -Eixo
+    if(Coord < 0) { // Se a Coordenada der Negativa o Motor vai para -Eixo
         MotorPorPasso(abs(Coord), 1); // Move o Motor com Coord passos, para - Eixo
     }
     

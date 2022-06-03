@@ -9,7 +9,7 @@ class Joystick { // Inicialização da Classe JoyStick
         //Métodos:
         int GetXValue(); // Inicialização do Método para Pegar o Valor do X
         int GetYValue(); // Inicialização do Método para Pegar o Valor do Y
-        void Button(); // Inicialização do Método para Receber Input do Botão
+        int Button(); // Inicialização do Método para Receber Input do Botão
         
         // GPIO's:
         AnalogIn xAxis; // Inicialização do AnalogIn do Eixo X
