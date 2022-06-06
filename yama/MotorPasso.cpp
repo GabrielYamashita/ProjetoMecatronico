@@ -38,19 +38,27 @@ void MP::MoverMotor(int Dir) {
 }
 
  // Método para Mover Motor para o Referenciamento
-void MP::MotorReferenciamento(bool D) {
+void MP::MotorReferenciamento(bool Dir) {
     while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
-        MoverMotor(D); // Move o Motor para o Fim de Curso
+        MoverMotor(Dir); // Move o Motor para o Fim de Curso
     }
     
     while(FCi == 0 | FCf == 0) { // Checa se Apenas um Fim de Curso está pressionado
-        MoverMotor(!D); // Move o Motor para o Outro Lado
+        MoverMotor(!Dir); // Move o Motor para o Outro Lado
     }
     
     while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
-        MoverMotor(D); // Move o Motor para o Fim de Curso
+        MoverMotor(Dir); // Move o Motor para o Fim de Curso
     }
 }
+
+//int MotorTamanhoFuso(int Dir) {
+//    int passosFuso = 0;
+//    while(FCf == 1) {
+//        MoverMotor(Dir);
+//    }
+//    return passosFuso;
+//}
 
  // Método da Aceleração do Motor
 void accMotor() {   

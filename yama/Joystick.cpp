@@ -1,10 +1,10 @@
 #include "Joystick.h" // Importa Arquivo de Classe do Motor de Passo
-Serial pc(USBTX, USBRX);
+//Serial pc(USBTX, USBRX);
 
 Joystick::Joystick( // __init__
     PinName xPin, // Pino do x
     PinName yPin, // Pino do y
-    PinName butPin // Pino do Botão
+    PinName butPin // Pino do Botão do JS
 ) : 
         xAxis(xPin), // Medição do Joystick em x
         yAxis(yPin), // Medição do Joystick em y
@@ -58,6 +58,10 @@ int Joystick::GetYValue() {
     else {
         return yValue; // y = xValue
     }
+}
+
+ // Método para Pegar o Valor do Z
+int Joystick::GetZValue() {
 }
 
  // Método para Receber Input do Botão
