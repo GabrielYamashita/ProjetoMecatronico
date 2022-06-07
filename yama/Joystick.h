@@ -4,7 +4,7 @@
 
 class Joystick { // Inicialização da Classe JoyStick
     public:
-        Joystick(PinName xPin, PinName yPin, PinName butPin); // x, y e botão do JoyStick
+        Joystick(PinName xPin, PinName yPin, PinName butPin, PinName zMais, PinName zMenos); // x, y e botão do JoyStick
         
         //Métodos:
         int GetXValue(); // Inicialização do Método para Pegar o Valor do X
@@ -16,6 +16,8 @@ class Joystick { // Inicialização da Classe JoyStick
         AnalogIn xAxis; // Inicialização do AnalogIn do Eixo X
         AnalogIn yAxis; // Inicialização do AnalogIn do Eixo Y
         DigitalIn Sw; // Inicialização do DigitalIn do Botão
+        DigitalIn Mais; // Inicialização do Botão para Subir o Z | z+
+        DigitalIn Menos; // Inicialização do Botão para Descer o Z | z-
         
         // Variáveis:
         int offset; // Inicaliza a Variável de Compensação do JS

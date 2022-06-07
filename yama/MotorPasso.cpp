@@ -8,13 +8,12 @@ MP::MP( // __init__
     PinName fci, // Pino do Fim de Curso Inicial
     PinName fcf // Pino do Fim de Curso Final
 ) : 
-        MotorPasso(a, b, c, d), // BusOut do Motor de Passo
-        FCi(fci), // Fim de Curso Inicial
-        FCf(fcf) { // Fim de Curso Final
+    MotorPasso(a, b, c, d), // BusOut do Motor de Passo
+    FCi(fci), // Fim de Curso Inicial
+    FCf(fcf) { // Fim de Curso Final
         
     // Variáveis da Classe
-    this -> QntPassos = 0; // 
-    this -> espera = 4; // Tempo de Espera para Mover um Passo [ms]
+    this -> espera = 3; // Tempo de Espera para Mover um Passo [ms]
 }
 
  // Método para Mover Motor Infinitamente com Input de Direção
@@ -26,6 +25,7 @@ void MP::MoverMotor(int Dir) {
         
         MotorPasso = 1 << Passo;
         wait_ms(espera);
+        this -> QntPassos--; 
         
     } else if(Dir == 1) { // Gira no Sentido Anti-Horário
         this -> Passo++;
@@ -34,6 +34,7 @@ void MP::MoverMotor(int Dir) {
         
         MotorPasso = 1 << Passo; // Muda o Bitwise
         wait_ms(espera); // Espera o Tempo Pré-Definido
+        this -> QntPassos++; 
     }
 }
 
@@ -50,6 +51,7 @@ void MP::MotorReferenciamento(bool Dir) {
     while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
         MoverMotor(Dir); // Move o Motor para o Fim de Curso
     }
+    this -> QntPassos = 0; 
 }
 
 //int MotorTamanhoFuso(int Dir) {
@@ -74,12 +76,12 @@ void MP::MotorPorPasso(int passos, int Dir) {
 }
 
  // Método para Mover o Motor com Coordenadas
-void MP::MotorDosagem(int Coord) {
-    if(Coord < 0) { // Se a Coordenada der Negativa o Motor vai para -Eixo
-        MotorPorPasso(abs(Coord), 1); // Move o Motor com Coord passos, para - Eixo
+void MP::MotorDosagem(int Delta) {
+    if(Delta < 0) { // Se a Coordenada der Negativa o Motor vai para -Eixo
+        MotorPorPasso(abs(Delta), 0); // Move o Motor com Coord passos, para - Eixo
     }
     
     else { // Se a Coordenada der Positiva o Motor vai para +Eixo
-        MotorPorPasso(Coord, 0); // Move o Motor com Coord passos, para +Eixo
+        MotorPorPasso(Delta, 1); // Move o Motor com Coord passos, para +Eixo
     }
 }

@@ -4,14 +4,18 @@
 Joystick::Joystick( // __init__
     PinName xPin, // Pino do x
     PinName yPin, // Pino do y
-    PinName butPin // Pino do Botão do JS
+    PinName butPin, // Pino do Botão do JS
+    PinName zMais,
+    PinName zMenos
 ) : 
-        xAxis(xPin), // Medição do Joystick em x
-        yAxis(yPin), // Medição do Joystick em y
-        Sw(butPin) { // Botão do Joystick
+    xAxis(xPin), // Medição do Joystick em x
+    yAxis(yPin), // Medição do Joystick em y
+    Sw(butPin), // Botão do Joystick
+    Mais(zMais), // Botão para Subir o Z
+    Menos(zMenos) { // Botão para Descer o Z
 
-        // Variáveis de Classe:
-        this -> offset = 200; // Compensação para Erro do JS
+    // Variáveis de Classe:
+    this -> offset = 200; // Compensação para Erro do JS
 }
 
  // Método para Pegar o Valor do X
@@ -62,6 +66,7 @@ int Joystick::GetYValue() {
 
  // Método para Pegar o Valor do Z
 int Joystick::GetZValue() {
+    
 }
 
  // Método para Receber Input do Botão

@@ -9,7 +9,9 @@
 MP MPx(PB_2, PB_1, PB_15, PB_14, PA_11, PA_12); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | x
 MP MPy(PA_5, PA_6, PA_7, PB_6, PB_13, PC_4); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | y
 MP MPz(PB_9, PB_8, PC_9, PC_8, PC_5, PC_6); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | z
-Joystick JS(A4, A5, PC_13); // x, y, botão | joystick
+Joystick JS(A4, A5, PC_13, PA_8, PB_10); // x, y, botão | joystick
+
+Timer Debounce;
 
 // PORTAS SERIAIS:
 //Serial pc(D1, D0, 9600); // tx, rx, baud | pc
@@ -69,121 +71,131 @@ int estado = 0;
 
 // LOOP PRINCIPAL:
 int main(){    // toda vez q chegar(Rx) info pela serial, execura a funcao interupt
-    display.attach(&Rx_interrupt, Serial::RxIrq);
-    pc.printf("ENTROU E COMECOU O CODIGO");
-    Emerg.fall(&etapaEmerg); // Aciona o Estado de Emergência
-    
-    pc.printf("antes do refer | %d", estado);
-    while(estado == 2) { // REFERÊNCIAMENTO
-        printf("referenciamento | %d", estado);
-        SendText("t1.txt=\"REFERENCIANDO EIXO X ...\""); // Mudando Texto do Display | x
-        MPx.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo X | x
+    while(1) {
+        display.attach(&Rx_interrupt, Serial::RxIrq);
+        Emerg.fall(&etapaEmerg); // Aciona o Estado de Emergência
         
-        SendText("t1.txt=\"REFERENCIANDO EIXO Y ...\""); // Mudando Texto do Display | x
-        MPy.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Y | y
-        
-        SendText("t1.txt=\"REFERENCIANDO EIXO Z ...\""); // Mudando Texto do Display | x
-        MPz.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Z | z
-        
-        // Mudando de Tela no Display --> INTRO POSICIONAMENTO (PEGA)
-        SendText("page 3");
-        estado = 3;
-    } // FIM DO ESTADO DE REFERÊNCIAMENTO   
-    
-    
-    while(estado == 4) { // POSICIONAMENTO (PEGA)
-        
-        int JSx = JS.GetXValue(); // Pega a Direção x do JS | JS
-        int JSy = JS.GetYValue(); // Pega a Direção y do JS | JS
-        JS_Posicionamento(JSx, JSy); // Move os Motores de Acordo com o JS
-        printf("\rX = %3d | Y = %3d - (%4d, %4d)\n", MPx.QntPassos, MPy.QntPassos, JSx, JSy);
-        
-        
-        // Ponto de Coleta/Pega: 
-        DisplayCircle(MPx.QntPassos, MPy.QntPassos); // bota circulo vermelho da pos do pega
-        DisplayXYZ_Pega(MPx.QntPassos, MPy.QntPassos, MPz.QntPassos); // muda caixa de texto do x y z
-        
-
-    } // FIM DO ESTADO DE POSICIONAMENTO (PEGA)
-    
-    
-    while(estado == 6) { // POSICIONAMENTO (SOLTAS)
-        int JSx = JS.GetXValue(); // Pega a Direção x do JS | JS
-        int JSy = JS.GetYValue(); // Pega a Direção y do JS | JS
-        JS_Posicionamento(JSx, JSy); // Move os Motores de Acordo com o JS
-        printf("\rX = %3d | Y = %3d - (%4d, %4d)\n", MPx.QntPassos, MPy.QntPassos, JSx, JSy);
-    
-        DisplayCircle(MPx.QntPassos, MPy.QntPassos); // bota circulo vermelho da pos do pega
-//        DisplayXYZ_ Solta(MPx.QntPassos, MPy.QntPassos, MPz.QntPassos, V, Recip); // muda caixa de texto do x y z
-        
-    } // FIM DO ESTADO DE POSICIONAMENTO (SOLTAS)
-    
-    
-    while(estado == 8) { // DOSAGEM
-        // Define as Coordenadas do Pega
-        int xPega = X[0];
-        int yPega = Y[0];
-        int zPega = Z[0];
-
-        // Move o Motor para as Coordenadas do Pega
-        MPx.MotorPorPasso(xPega, 1);
-        MPy.MotorPorPasso(yPega, 1);
-        pulsoPipeta(zPega); // Pega o Líquido do Pega para a Pipeta
-        
-        int recip = 1; // Começa no Índice 1 da Lista, dos Recipientes/Soltas
-        while(recip < sizeof(X)/sizeof(X[0])) { // Roda com o Tamanho da lista dos Recipientes
+        while(estado == 2) { // REFERÊNCIAMENTO
+            SendText("t1.txt=\"REFERENCIANDO EIXO X ...\""); // Mudando Texto do Display | x
+            MPx.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo X | x
             
-            // Define Dados do Recepiente
-            int xAlvo = X[recip]; // Coord Recipiente X
-            int yAlvo = Y[recip]; // Coord Recipiente Y
-            int zAlvo = Z[recip]; // Coord Recipiente Z
-            int vAlvo = V[recip]; // Volume do Recipiente
+            SendText("t1.txt=\"REFERENCIANDO EIXO Y ...\""); // Mudando Texto do Display | x
+            MPy.espera = 5.5;
+            MPy.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Y | y
             
-            int volRecip = 0;
-            while(volRecip < vAlvo) { // Loop do Volume do Recipiente
-                // Quantidade de Passos que o Motor precisa Andar para chegar no Recipiente
-                int xDelta = xAlvo - xPega; // Delta X
-                int yDelta = yAlvo - yPega; // Delta Y
+            SendText("t1.txt=\"REFERENCIANDO EIXO Z ...\""); // Mudando Texto do Display | x
+            MPz.espera = 4;
+            MPz.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Z | z
+            
+            // Mudando de Tela no Display --> INTRO POSICIONAMENTO (PEGA)
+            SendText("page 3");
+            estado = 3;
+        } // FIM DO ESTADO DE REFERÊNCIAMENTO   
+        
+        
+        while(estado == 4) { // POSICIONAMENTO (PEGA)
+            
+            int JSx = JS.GetXValue(); // Pega a Direção x do JS | JS
+            int JSy = JS.GetYValue(); // Pega a Direção y do JS | JS
+            JS_Posicionamento(JSx, JSy); // Move os Motores de Acordo com o JS
+            pc.printf("\rX = %3d | Y = %3d - (%4d, %4d)\n", MPx.QntPassos, MPy.QntPassos, JSx, JSy);
+            
+            
+            // Ponto de Coleta/Pega: 
+            DisplayCircle(MPx.QntPassos, MPy.QntPassos); // bota circulo vermelho da pos do pega
+            DisplayXYZ_Pega(MPx.QntPassos, MPy.QntPassos, MPz.QntPassos); // muda caixa de texto do x y z
+            
+    
+        } // FIM DO ESTADO DE POSICIONAMENTO (PEGA)
+        
+        
+        while(estado == 6) { // POSICIONAMENTO (SOLTAS)
+            int JSx = JS.GetXValue(); // Pega a Direção x do JS | JS
+            int JSy = JS.GetYValue(); // Pega a Direção y do JS | JS
+            JS_Posicionamento(JSx, JSy); // Move os Motores de Acordo com o JS
+            pc.printf("\rX = %3d | Y = %3d - (%4d, %4d)\n", MPx.QntPassos, MPy.QntPassos, JSx, JSy);
+        
+            DisplayCircle(MPx.QntPassos, MPy.QntPassos); // bota circulo vermelho da pos do pega
+    //        DisplayXYZ_ Solta(MPx.QntPassos, MPy.QntPassos, MPz.QntPassos, V, Recip); // muda caixa de texto do x y z
+            
+        } // FIM DO ESTADO DE POSICIONAMENTO (SOLTAS)
+        
+        
+        while(estado == 8) { // DOSAGEM
+            // Define as Coordenadas do Pega
+            int xPega = X[0];
+            int yPega = Y[0];
+            int zPega = Z[0];
+    
+            // Move o Motor para as Coordenadas do Pega
+            MPx.MotorDosagem(xPega - X[-1]);
+            MPy.MotorDosagem(yPega - Y[-1]);
+            pulsoPipeta(zPega); // Pega o Líquido do Pega para a Pipeta
+            
+            int recip = 1; // Começa no Índice 1 da Lista, dos Recipientes/Soltas
+            while(recip < sizeof(X)/sizeof(X[0])) { // Roda com o Tamanho da lista dos Recipientes
                 
-                // Move o Motor até o Recipiente
-                MPx.MotorDosagem(xDelta);
-                MPy.MotorDosagem(yDelta);
-                pulsoPipeta(zAlvo);  // Solta o Líquido da Pipeta para a Recipiente
+                // Define Dados do Recepiente
+                int xAlvo = X[recip]; // Coord Recipiente X
+                int yAlvo = Y[recip]; // Coord Recipiente Y
+                int zAlvo = Z[recip]; // Coord Recipiente Z
+                int vAlvo = V[recip]; // Volume do Recipiente
                 
-                // Move o Motor até o Pega
-                MPx.MotorDosagem(-1 * xDelta);
-                MPy.MotorDosagem(-1 * yDelta);
-                pulsoPipeta(zPega); // Pega o Líquido do Pega para a Pipeta
-                
-                volRecip++;
-            }   
-            recip++;
-        }
-        SendText("page 9");
-        estado = 9;
-    } // FIM DO ESTADO DE DOSAGEM
+                int volRecip = 0;
+                while(volRecip < vAlvo) { // Loop do Volume do Recipiente
+                    // Quantidade de Passos que o Motor precisa Andar para chegar no Recipiente
+                    int xDelta = xAlvo - xPega; // Delta X
+                    int yDelta = yAlvo - yPega; // Delta Y
+                    
+                    // Move o Motor até o Recipiente
+                    MPx.MotorDosagem(xDelta);
+                    MPy.MotorDosagem(yDelta);
+                    pulsoPipeta(zAlvo);  // Solta o Líquido da Pipeta para a Recipiente
+                    
+                    // Move o Motor até o Pega
+                    MPx.MotorDosagem(-1 * xDelta);
+                    MPy.MotorDosagem(-1 * yDelta);
+                    pulsoPipeta(zPega); // Pega o Líquido do Pega para a Pipeta
+                    
+                    volRecip++;
+                }   
+                recip++;
+            }
+            SendText("page 9");
+            estado = 9;
+        } // FIM DO ESTADO DE DOSAGEM
+    }
 }
 
 // FUNÇÕES (MAIN):
 void etapaEmerg(void) { // Entra no Estado de Emergência | Emergência
+    wait_ms(200);
+    pc.printf("\remergencia acionada\n");
+    SendText("page 10");
+    estado = 10;
+
     while(Emerg == 0) { // Continua em Emergência até que o Botão mude de Estado
-        printf("\remergencia acionada\n");
     }
+    
+    pc.printf("\r saida de emergencia\n");
+    SendText("page 0");
+    estado = 0;
+
 }
 
-    void JS_Posicionamento(int x, int y) { // Move os Motores de Acordo com Inputs do JS
+void JS_Posicionamento(int x, int y) { // Move os Motores de Acordo com Inputs do JS
     if(x < 500 - JS.offset){ // Detecta se o JS Está para a Esquerda
         MPx.MoverMotor(1); // Move -x
         MPx.QntPassos--;
         if(MPx.QntPassos < 0) {MPx.QntPassos = 0;}
         
-        printf("\resquerda");
+        pc.printf("\resquerda");
     }
     if(x > 500 + JS.offset) { // Detecta se o JS Está para a Diretia
         MPx.MoverMotor(0); // Move +x
         MPx.QntPassos++;
         
-        printf("\rdireita");
+        pc.printf("\rdireita");
     }
     
     if(y > 500 + JS.offset) { // Detecta se o JS Está para Baixo
@@ -191,18 +203,17 @@ void etapaEmerg(void) { // Entra no Estado de Emergência | Emergência
         MPy.QntPassos--;
         if(MPy.QntPassos < 0) {MPy.QntPassos = 0;}
         
-        printf("\rbaixo");
+        pc.printf("\rbaixo");
     }
     if(y < 500 - JS.offset){ // Detecta se o JS Está para Cima
         MPy.MoverMotor(0); // Move +y
         MPy.QntPassos++;
         
-        printf("\rcima");
+        pc.printf("\rcima");
     }
     
     if(JS.Button() == 1) {
-        printf("\rBotao Pressionado\n");
-        
+        pc.printf("\rBotao Pressionado\n");
     }
 }
 
@@ -226,14 +237,12 @@ void Rx_interrupt() { // Recebe os Outputs dos Botões do display
             case 'z': // MENU --> INTRO REFERÊNRENCIAMENTO
                 SendText("page 1");
                 estado = 1;
-                pc.printf("estado %d", estado);
                 rx_line = 0x00;
                 break;
     
             case 'a': // INTRO REFERÊNRENCIAMENTO --> REFERÊNRENCIAMENTO
                 SendText("page 2");
                 estado = 2;
-                pc.printf("estado %d", estado);
                 rx_line = 0x00;
                 break;
                 
@@ -292,6 +301,7 @@ void Rx_interrupt() { // Recebe os Outputs dos Botões do display
                 SendText("page 7"); // pagina pra comecar o processo de pipetagem
                 estado=7;
                 break;
+                
               
             default: rx_line=0x00;
         }
@@ -317,7 +327,7 @@ void DisplayCircle(int x, int y){ // Desenha um Círculo no Gráfico da Rotinas 
     y_relative = y_percent * (372-132) + 133; // Calcula a Coordenada Relativa do Cartesiano | y
     
     // Manda a Coordenada do Círculo para o LCD
-    sprintf(txt,"cirs %d,%d,5,RED", x_relative, y_relative);
+        sprintf(txt,"cirs %d,%d,5,RED", x_relative, y_relative);
     pc.printf(txt);
     SendText(txt);   
 }
