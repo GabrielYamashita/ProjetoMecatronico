@@ -11,10 +11,8 @@ MP MPy(PA_5, PA_6, PA_7, PB_6, PB_13, PC_4); // Bobina1, Bobina2, Bobina3, Bobin
 MP MPz(PB_9, PB_8, PC_9, PC_8, PC_5, PC_6); // Bobina1, Bobina2, Bobina3, Bobina4, FimDeCursoInicial, FimDeCursoFinal | z
 Joystick JS(A4, A5, PC_13, PA_8, PB_10); // x, y, botão | joystick
 
-Timer Debounce;
 
 // PORTAS SERIAIS:
-//Serial pc(D1, D0, 9600); // tx, rx, baud | pc
 Serial pc(USBTX, USBRX); // 
 Serial display(D8, D2, 9600); // tx, rx, baud | Display
 
@@ -27,10 +25,13 @@ int xAtual; // Coord x Atual do Motor | x
 int yAtual; // Coord x Atual do Motor | y
 int zAtual; // Coord x Atual do Motor | z
 
-int X[26];
-int Y[26];
-int Z[26];
-int V[26];
+int X[16];
+int Y[16];
+int Z[16];
+int V[16];
+
+int INDEX = 1;
+int volume; // volume de trasferencia do frasco atual
 
 // VARIÁVEIS DO LCD
 char rx_line;
@@ -38,7 +39,6 @@ char rx_line;
 int machine_xaxis_size = 1000;
 int machine_yaxis_size = 1000;
 int coleta_idx = 1; // indice do frasco atual (sendo selecionado)
-int volume = 0; // volume de trasferencia do frasco atual
 int tempo_dosagem = 2; // tempo real do ciclo em min
 
 int x_percent;
@@ -87,6 +87,13 @@ int main(){    // toda vez q chegar(Rx) info pela serial, execura a funcao inter
             MPz.espera = 4;
             MPz.MotorReferenciamento(0); // Realiza o Referenciamento pro 0 do eixo Z | z
             
+            SendText("t1.txt=\"CONTANDO OS PASSOS ...\""); // Mudando Texto do Display | x
+            int qntPassosX = MPx.MotorTamanhoFuso(1);
+            int qntPassosY = MPy.MotorTamanhoFuso(1);
+            int qntPassosZ = MPz.MotorTamanhoFuso(1);
+            
+            printf("\rX = %i, Y = %i, Z = %i\n", qntPassosX, qntPassosY, qntPassosZ);
+            
             // Mudando de Tela no Display --> INTRO POSICIONAMENTO (PEGA)
             SendText("page 3");
             estado = 3;
@@ -128,12 +135,12 @@ int main(){    // toda vez q chegar(Rx) info pela serial, execura a funcao inter
             int zPega = Z[0];
     
             // Move o Motor para as Coordenadas do Pega
-            MPx.MotorDosagem(xPega - X[-1]);
-            MPy.MotorDosagem(yPega - Y[-1]);
+            MPx.MotorDosagem(xPega - X[INDEX]);
+            MPy.MotorDosagem(yPega - Y[INDEX]);
             pulsoPipeta(zPega); // Pega o Líquido do Pega para a Pipeta
             
             int recip = 1; // Começa no Índice 1 da Lista, dos Recipientes/Soltas
-            while(recip < sizeof(X)/sizeof(X[0])) { // Roda com o Tamanho da lista dos Recipientes
+            while(recip < INDEX) { // Roda com o Tamanho da lista dos Recipientes
                 
                 // Define Dados do Recepiente
                 int xAlvo = X[recip]; // Coord Recipiente X
@@ -180,7 +187,7 @@ void etapaEmerg(void) { // Entra no Estado de Emergência | Emergência
     pc.printf("\r saida de emergencia\n");
     SendText("page 0");
     estado = 0;
-
+//    wait_ms(1000);
 }
 
 void JS_Posicionamento(int x, int y) { // Move os Motores de Acordo com Inputs do JS
@@ -253,6 +260,11 @@ void Rx_interrupt() { // Recebe os Outputs dos Botões do display
                 
             case 'c': // POSICIONAMENTO (PEGA) --> INTRO POSICIONAMENTO (SOLTA)
                 // Salva a Posição do Pega
+                X[INDEX] = MPx.QntPassos;
+                Y[INDEX] = MPy.QntPassos;
+                Z[INDEX] = MPz.QntPassos;
+                V[INDEX] = 0;
+                INDEX++;
             
                 SendText("page 5");
                 estado = 5;
@@ -265,7 +277,11 @@ void Rx_interrupt() { // Recebe os Outputs dos Botões do display
                 
             case 'e': // Selecionar mais uma posicao de tranferência
                 // Salva os Pontos do Solta
-                
+                X[INDEX] = MPx.QntPassos;
+                Y[INDEX] = MPy.QntPassos;
+                Z[INDEX] = MPz.QntPassos;
+                V[INDEX] = volume;
+                INDEX++;
             
                 SendText("page 6"); // recarrega a pagina -> zera os valores
                 estado = 6;
@@ -273,7 +289,11 @@ void Rx_interrupt() { // Recebe os Outputs dos Botões do display
                 
             case 'f': // Finalizar seleção das posições de tranferência
                 // Salva o Último Ponto do Solta
-                
+                X[INDEX] = MPx.QntPassos;
+                Y[INDEX] = MPy.QntPassos;
+                Z[INDEX] = MPz.QntPassos;
+                V[INDEX] = volume;
+                INDEX++;
             
                 SendText("page 7"); // pagina pra comecar o processo de pipetagem
                 estado = 7;

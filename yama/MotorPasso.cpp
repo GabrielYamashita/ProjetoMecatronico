@@ -14,6 +14,7 @@ MP::MP( // __init__
         
     // Variáveis da Classe
     this -> espera = 3; // Tempo de Espera para Mover um Passo [ms]
+    this -> QntPassos = 0; 
 }
 
  // Método para Mover Motor Infinitamente com Input de Direção
@@ -25,7 +26,6 @@ void MP::MoverMotor(int Dir) {
         
         MotorPasso = 1 << Passo;
         wait_ms(espera);
-        this -> QntPassos--; 
         
     } else if(Dir == 1) { // Gira no Sentido Anti-Horário
         this -> Passo++;
@@ -34,7 +34,6 @@ void MP::MoverMotor(int Dir) {
         
         MotorPasso = 1 << Passo; // Muda o Bitwise
         wait_ms(espera); // Espera o Tempo Pré-Definido
-        this -> QntPassos++; 
     }
 }
 
@@ -51,16 +50,16 @@ void MP::MotorReferenciamento(bool Dir) {
     while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
         MoverMotor(Dir); // Move o Motor para o Fim de Curso
     }
-    this -> QntPassos = 0; 
 }
 
-//int MotorTamanhoFuso(int Dir) {
-//    int passosFuso = 0;
-//    while(FCf == 1) {
-//        MoverMotor(Dir);
-//    }
-//    return passosFuso;
-//}
+int MP::MotorTamanhoFuso(int Dir) {
+    int passosFuso = 0;
+    while(FCf == 1) {
+        MoverMotor(Dir);
+        passosFuso++;
+    }
+    return passosFuso;
+}
 
  // Método da Aceleração do Motor
 void accMotor() {   
