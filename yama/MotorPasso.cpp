@@ -35,20 +35,35 @@ void MP::MoverMotor(int Dir) {
         MotorPasso = 1 << Passo; // Muda o Bitwise
         wait_ms(espera); // Espera o Tempo Pré-Definido
     }
+    MotorPasso = 0;
 }
 
  // Método para Mover Motor para o Referenciamento
 void MP::MotorReferenciamento(bool Dir) {
-    while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
-        MoverMotor(Dir); // Move o Motor para o Fim de Curso
-    }
-    
-    while(FCi == 0 | FCf == 0) { // Checa se Apenas um Fim de Curso está pressionado
-        MoverMotor(!Dir); // Move o Motor para o Outro Lado
-    }
-    
-    while(FCi == 1 & FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
-        MoverMotor(Dir); // Move o Motor para o Fim de Curso
+    if(Dir == 0){
+        while(FCi == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
+            MoverMotor(Dir); // Move o Motor para o Fim de Curso
+        }
+        
+        while(FCi == 0) { // Checa se Apenas um Fim de Curso está pressionado
+            MoverMotor(!Dir); // Move o Motor para o Outro Lado
+        }
+        
+        while(FCi == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
+            MoverMotor(Dir); // Move o Motor para o Fim de Curso
+        }
+    } else {
+        while(FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
+            MoverMotor(Dir); // Move o Motor para o Fim de Curso
+        }
+        
+        while(FCf == 0) { // Checa se Apenas um Fim de Curso está pressionado
+            MoverMotor(!Dir); // Move o Motor para o Outro Lado
+        }
+        
+        while(FCf == 1) { // Checa se Ambos os Fins de Curso não estão pressionados
+            MoverMotor(Dir); // Move o Motor para o Fim de Curso
+        }
     }
 }
 
